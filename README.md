@@ -21,7 +21,26 @@ composer require comphp/session-comphp-database
 ```php
 <?php
 
-// TODO: Write usage
+use CommonPHP\Database\DatabaseManager;
+use CommonPHP\Drivers\Session\CommonPHPDatabase\CommonPHPDatabaseSessionDriver;
+use CommonPHP\Drivers\Session\CommonPHPDatabase\CommonPHPDatabaseSessionOptions;
+use CommonPHP\Session\SessionManager;
+
+$database = DatabaseManager::connection('main', $databaseDriver);
+
+$driver = new CommonPHPDatabaseSessionDriver(
+    $database,
+    new CommonPHPDatabaseSessionOptions(
+        table: 'sessions',
+        sessionName: 'APPSESSID',
+        connection: 'main',
+    ),
+);
+
+$session = new SessionManager($driver);
+$session->start();
+$session->set('user_id', 42);
+$session->save();
 ```
 
 ## Driver Notes
@@ -29,6 +48,20 @@ composer require comphp/session-comphp-database
 This driver is intended for applications that already use `comphp/database` and want session data stored through a CommonPHP database connection.
 
 The driver should keep database-backed session storage separate from the core session package while using the common database abstraction.
+
+By default, the driver expects a table with these unquoted SQL identifiers:
+
+```sql
+create table sessions (
+    id varchar(128) not null,
+    name varchar(128) not null,
+    payload text not null,
+    last_activity integer not null,
+    primary key (id, name)
+);
+```
+
+Use `CommonPHPDatabaseSessionOptions` to change the table, column names, session cookie name, connection name, lifetime, garbage collection odds, or generated id byte length.
 
 ## Error Handling
 

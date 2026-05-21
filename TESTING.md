@@ -25,4 +25,4 @@ On Windows, use `vendor\bin\phpunit.bat`.
 
 ## Notes
 
-TODO: ADD NOTES ON WHAT THIS LIBRARY ACTUALLY DOES
+The unit suite uses a small fake CommonPHP database driver, so it does not need MySQL, SQL Server, SQLite, or any other database server. The tests cover lifecycle behavior, manager connection targeting, id regeneration, invalidation, expiry, garbage collection, option validation, and corrupt payload handling.
